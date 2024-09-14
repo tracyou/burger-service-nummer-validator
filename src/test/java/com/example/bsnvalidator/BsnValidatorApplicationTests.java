@@ -11,17 +11,11 @@ class BsnValidatorApplicationTests {
 
     BsnValidatorController bsnValidatorController = new BsnValidatorController();
 
-//    @Test
-//    void testNumberIsValid() {
+    @Test
+    void testNumberIsValid() {
 //        String validNumber = "123456789";
-//        assertTrue(bsnValidatorController.isValid(validNumber));
-//    }
-
-//    @Test
-//    void testNumberAlreadyExists() {
-//        String validNumber= "123456789";
-//        assertFalse(bsnValidatorController.isUnique(validNumber));
-//    }
+        assertTrue(bsnValidatorController.isValid(("472002193")));
+    }
 
     @Test
     void exceptionIsThrownWithShortNumber() {
@@ -53,7 +47,6 @@ class BsnValidatorApplicationTests {
 
     @Test
     void numbersHaveNoSequence() {
-        String validNumber = "123456789";
-        assertTrue(bsnValidatorController.hasNoOrders());
+        assertTrue(bsnValidatorController.hasNoOrders("123456789"));
     }
 }
