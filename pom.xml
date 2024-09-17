@@ -28,6 +28,9 @@
     </scm>
     <properties>
         <java.version>22</java.version>
+        <sonar.projectKey>burger-service-nummer-validator</sonar.projectKey>
+        <sonar.projectName>burger service nummer validator</sonar.projectName>
+        <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
     </properties>
     <dependencies>
         <dependency>
@@ -61,6 +64,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
