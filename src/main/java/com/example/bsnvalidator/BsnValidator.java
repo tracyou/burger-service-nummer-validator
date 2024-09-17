@@ -1,10 +1,10 @@
-package com.example.bsnvalidator.rest;
+package com.example.bsnvalidator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import org.springframework.stereotype.Repository;
 
-public class BsnValidatorController {
+
+@Repository
+public class BsnValidator {
     public boolean isValid(String validBsn) {
         return hasRightLength(validBsn) & elevenProofCheck(validBsn) & hasNoOrders(validBsn);
     }
@@ -30,11 +30,14 @@ public class BsnValidatorController {
 
         for (int i = 0; i < 9; i++) {
             int digit = Integer.parseInt(String.valueOf(bsn.charAt(i)));
-            System.out.println(digit);
             sum += digit * weights[i];
         }
 
-        return sum % 11 == 0;
+        if (sum % 11 != 0) {
+            throw new IllegalArgumentException("Number doesn't pass 11 proof.");
+        }
+
+        return true;
     }
 
     public boolean hasNoOrders(String validNumber) {
@@ -49,16 +52,31 @@ public class BsnValidatorController {
             }
         }
 
-        return hasSequence(intArray);
+        if (hasSequence(intArray)) {
+            throw new IllegalArgumentException("Number has an apparent sequence.");
+        }
+
+        return false;
     }
 
     public static boolean hasSequence(int[] arr) {
 
-        Arrays.sort(arr);
-
         for (int i = 0; i < arr.length - 2; i++) {
             if (arr[i] == arr[i + 1] - 1 &&
-                    arr[i + 1] == arr[i + 2] - 1) {
+                    arr[i] == arr[i + 2]) {
+                return true;
+            }
+        }
+
+        for (int i = 0; i < arr.length - 2; i++) {
+            int first = arr[i];
+            int second = arr[i + 1];
+            int third = arr[i + 2];
+
+            if (second - first == 1 && third - second == 1) {
+                return true;
+            }
+            if (first - second == 1 && second - third == 1) {
                 return true;
             }
         }

@@ -1,6 +1,5 @@
 package com.example.bsnvalidator;
 
-import com.example.bsnvalidator.rest.BsnValidatorController;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -9,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class BsnValidatorApplicationTests {
 
-    BsnValidatorController bsnValidatorController = new BsnValidatorController();
+    BsnValidator bsnValidatorController = new BsnValidator();
 
     @Test
     void testNumberIsValid() {
-//        String validNumber = "123456789";
         assertTrue(bsnValidatorController.isValid(("472002193")));
     }
 

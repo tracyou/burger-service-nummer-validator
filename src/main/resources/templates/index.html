@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BSN Validator</title>
+</head>
+<body>
+
+<h1>BSN Validator</h1>
+<h2>Tracy Owusu 500819150</h2>
+
+<form th:action="@{'/sent'}" method="post">
+    <label for="input">Enter BSN:</label>
+    <input type="text" id="input" name="input" required>
+    <button type="submit">Validate</button>
+</form>
+
+<div th:if="${bsn != null}">
+    <h2>Data input</h2>
+    <p>Your BSN Number: <span th:text="${bsn}">BSN Number</span></p>
+</div>
+
+<div th:if="${error != null}">
+    <h2>Result</h2>
+    <span style="color: red;" th:text="${error}"></span>
+</div>
+
+</body>
+</html>
