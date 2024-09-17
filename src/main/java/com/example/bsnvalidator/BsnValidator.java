@@ -2,7 +2,6 @@ package com.example.bsnvalidator;
 
 import org.springframework.stereotype.Repository;
 
-
 @Repository
 public class BsnValidator {
     public boolean isValid(String validBsn) {
