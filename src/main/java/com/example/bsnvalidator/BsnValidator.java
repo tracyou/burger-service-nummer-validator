@@ -44,38 +44,31 @@ public class BsnValidator {
         int[] intArray = new int[length];
 
         for (int i = 0; i < length; i++) {
-            try {
-                intArray[i] = Integer.parseInt(String.valueOf(validNumber.charAt(i)));
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid character at index " + i + ": " + validNumber.charAt(i));
-            }
+            intArray[i] = Integer.parseInt(String.valueOf(validNumber.charAt(i)));
         }
 
         if (hasSequence(intArray)) {
             throw new IllegalArgumentException("Number has an apparent sequence.");
         }
 
-        return false;
+        return true;
     }
 
     public static boolean hasSequence(int[] arr) {
 
-        for (int i = 0; i < arr.length - 2; i++) {
-            if (arr[i] == arr[i + 1] - 1 &&
-                    arr[i] == arr[i + 2]) {
-                return true;
-            }
-        }
+//        for (int i = 0; i < arr.length - 2; i++) {
+//            if (arr[i] == arr[i + 1] - 1 &&
+//                    arr[i] == arr[i + 2]) {
+//                return true;
+//            }
+//        }
 
         for (int i = 0; i < arr.length - 2; i++) {
             int first = arr[i];
             int second = arr[i + 1];
             int third = arr[i + 2];
 
-            if (second - first == 1 && third - second == 1) {
-                return true;
-            }
-            if (first - second == 1 && second - third == 1) {
+            if ((second + first + third) / 3 == first) {
                 return true;
             }
         }

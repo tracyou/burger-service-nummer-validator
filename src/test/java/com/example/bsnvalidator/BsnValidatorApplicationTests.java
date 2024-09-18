@@ -12,7 +12,7 @@ class BsnValidatorApplicationTests {
 
     @Test
     void testNumberIsValid() {
-        assertTrue(bsnValidatorController.isValid(("472002193")));
+        assertTrue(bsnValidatorController.isValid(("474862872")));
     }
 
     @Test
@@ -40,11 +40,25 @@ class BsnValidatorApplicationTests {
 
     @Test
     void numberFailsTheElevenProof() {
-        assertFalse(bsnValidatorController.elevenProofCheck("123456789"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            bsnValidatorController.elevenProofCheck("123456789");
+        });
+
+        assertTrue(exception.getMessage().contains("Number doesn't pass 11 proof."));
     }
 
     @Test
     void numbersHaveNoSequence() {
-        assertTrue(bsnValidatorController.hasNoOrders("123456789"));
+        assertTrue(bsnValidatorController.hasNoOrders("474862872"));
+    }
+
+    @Test
+    void numbersHaveASequence() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            bsnValidatorController.hasNoOrders("111111111");
+        });
+
+        assertTrue(exception.getMessage().contains("Number has an apparent sequence."));
     }
 }
