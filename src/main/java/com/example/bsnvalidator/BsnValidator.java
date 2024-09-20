@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BsnValidator {
     public boolean isValid(String validBsn) {
-        return hasRightLength(validBsn) & elevenProofCheck(validBsn) & hasNoOrders(validBsn);
+        return hasRightLength(validBsn) && elevenProofCheck(validBsn) && hasNoOrders(validBsn);
     }
 
     public boolean hasRightLength(String bsn) {
@@ -55,13 +55,6 @@ public class BsnValidator {
     }
 
     public static boolean hasSequence(int[] arr) {
-
-//        for (int i = 0; i < arr.length - 2; i++) {
-//            if (arr[i] == arr[i + 1] - 1 &&
-//                    arr[i] == arr[i + 2]) {
-//                return true;
-//            }
-//        }
 
         for (int i = 0; i < arr.length - 2; i++) {
             int first = arr[i];
