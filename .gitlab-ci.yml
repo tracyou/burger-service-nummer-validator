@@ -49,7 +49,7 @@ sonarqube-check:
     - hva
 
 docker-deploy:
-  stage: deploy
+  stage: docker-deploy
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
