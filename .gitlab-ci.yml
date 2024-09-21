@@ -38,38 +38,126 @@
 #  dependencies:
 #    - sonarqube-check
 
-image: maven:3.8.4-jdk-11
+#image: maven:3.8.4-jdk-11
+#
+#stages:
+#  - build
+#  - deploy
+#
+#variables:
+#  GROUP_ID: ${GROUP_ID}
+#  ARTIFACT_ID: ${ARTIFACT_ID}
+#
+#before_script:
+#  - echo "$CI_JOB_TOKEN" | docker login -u ci-token --password-stdin $CI_REGISTRY
+#
+#build:
+#  stage: build
+#  script:
+#    - mvn clean package -Dmaven.test.skip=true
+#    - docker build -t $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA .
+#    - docker push $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+#  artifacts:
+#    paths:
+#      - target/*.jar
+#    expire_in: 1h
+#
+#deploy:
+#  stage: deploy
+#  image: docker:latest
+#  services:
+#    - docker:dind
+#  script:
+#    - docker pull $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+#    - docker tag $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA render/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+#    - docker push render/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+#  only:
+#    - main
+
+#stages:
+#  - build
+#  - deploy
+#
+#build:
+#  stage: build
+#  script:
+#    -
+#    - mvn sonar:sonar "-Dsonar.host.url=http://sonarcube.hva-fys.nl:28958/" "-Dsonar.login=tracy.owusu@hva.nl" "-Dsonar.password=tracy123"
+#    - docker build -t localhost:5000/banapp:v1.0 .
+#    - docker tag localhost:5000/banapp:v1.0 tracyo/banapp:v1.0
+#    - docker login
+#    - docker push tracyo/banapp:v1.0
+#
+#
+#
+
+# Image used for running the pipeline
+image: maven:3.8.4-openjdk-17-slim
+
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Manage Sonar cache
+#  MAVEN_OPTS: "-Dorg.gradle.daemon=false"
+  SONAR_HOST_URL: "http://sonarcube.hva-fys.nl:28958" # Replace with your SonarQube URL
+  SONAR_LOGIN: "sqp_41758736530fb03238d875e5150bb2eb363c67a3" # SonarQube token from GitLab CI/CD variables
+  SONAR_PROJECT_KEY: "burger-service-nummer-validator" # SonarQube project key
+  SONAR_PROJECT_NAME: "burger service nummer validator" # SonarQube project name
+  SONAR_SOURCE_ENCODING: "UTF-8"
+  SONAR_SCANNER_OPTS: "-Dsonar.java.binaries=target"
+  DOCKER_USERNAME: "tracyo"
+  DOCKER_PASSWORD: "tracy1234"
+  DOCKER_REGISTRY_IMAGE: "racyo/banapp"
+  CI_COMMIT_SHORT_SHA: "v1.0"
 
 stages:
   - build
+  - test
+  - sonar
   - deploy
 
-variables:
-  GROUP_ID: ${GROUP_ID}
-  ARTIFACT_ID: ${ARTIFACT_ID}
-
-before_script:
-  - echo "$CI_JOB_TOKEN" | docker login -u ci-token --password-stdin $CI_REGISTRY
-
+# Build the application
 build:
   stage: build
   script:
-    - mvn clean package -Dmaven.test.skip=true
-    - docker build -t $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+    - mvn clean package -DskipTests # Maven build step, skipping tests for now
   artifacts:
     paths:
-      - target/*.jar
-    expire_in: 1h
+      - target/*.jar # Store the built JAR as an artifact for later stages
+  tags:
+    - hva
 
-deploy:
-  stage: deploy
-  image: docker:latest
-  services:
-    - docker:dind
+# Run tests
+test:
+  stage: test
   script:
-    - docker pull $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
-    - docker tag $CI_REGISTRY_IMAGE/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA render/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
-    - docker push render/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
+    - mvn test # Run Maven tests
+  tags:
+    - hva
+
+# SonarQube scan for code quality
+sonarqube-check:
+  stage: sonar
+  script:
+    - mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN # SonarQube code quality scan
+  allow_failure: true
   only:
-    - main
+    - main # Run Sonar only on the main branch
+  tags:
+    - hva
+
+# Deploy the Docker image
+docker-deploy:
+  stage: deploy
+  image: docker:24.0.5 # Use Docker image with Docker CLI
+  services:
+    - docker:24.0.5-dind # Docker-in-Docker service to run Docker commands
+  script:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" # Authenticate to Docker registry
+    - docker build -t "$DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" . # Build Docker image
+    - docker push "$DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" # Push Docker image to registry
+  only:
+    - main # Deploy only from the main branch
+  tags:
+    - hva
+  environment:
+    name: production
+
