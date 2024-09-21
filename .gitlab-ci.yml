@@ -105,7 +105,7 @@ variables:
   SONAR_SCANNER_OPTS: "-Dsonar.java.binaries=target"
   DOCKER_USERNAME: "tracyo"
   DOCKER_PASSWORD: "tracy1234"
-  DOCKER_REGISTRY_IMAGE: "racyo/banapp"
+  DOCKER_REGISTRY_IMAGE: "tracyo/banapp"
   CI_COMMIT_SHORT_SHA: "v1.0"
 
 stages:
