@@ -9,8 +9,8 @@ public class BsnValidator {
     }
 
     public boolean hasRightLength(String bsn) {
-        if (bsn.length() < 8) {
-            throw new IllegalArgumentException("BSN is too short. It should be at least 8.");
+        if (bsn.length() < 9) {
+            throw new IllegalArgumentException("BSN is too short. It should be at least 9.");
         } else if (bsn.length() > 9) {
             throw new IllegalArgumentException("BSN is too long. It shouldn't be longer than 9.");
         } else {
@@ -20,9 +20,6 @@ public class BsnValidator {
 
 
     public boolean elevenProofCheck(String bsn) {
-        if (bsn.length() == 8) {
-            bsn = "0" + bsn;
-        }
 
         int sum = 0;
         int[] weights = {9, 8, 7, 6, 5, 4, 3, 2, -1};

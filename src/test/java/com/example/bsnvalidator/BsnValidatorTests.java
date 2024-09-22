@@ -2,11 +2,9 @@ package com.example.bsnvalidator;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class BsnValidatorApplicationTests {
+class BsnValidatorTests {
 
     BsnValidator bsnValidatorController = new BsnValidator();
 
@@ -18,10 +16,10 @@ class BsnValidatorApplicationTests {
     @Test
     void exceptionIsThrownWithShortNumber() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            bsnValidatorController.hasRightLength("1234567");
+            bsnValidatorController.hasRightLength("12345678");
         });
 
-        assertTrue(exception.getMessage().contains("BSN is too short. It should be at least 8."));
+        assertTrue(exception.getMessage().contains("BSN is too short. It should be at least 9."));
     }
 
     @Test
@@ -37,7 +35,6 @@ class BsnValidatorApplicationTests {
     void numberPassesTheElevenProof() {
         assertTrue(bsnValidatorController.elevenProofCheck("472002193"));
     }
-
     @Test
     void numberFailsTheElevenProof() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
