@@ -22,7 +22,6 @@ class BsnValidatorTests {
 
         assertTrue(exception.getMessage().contains("BSN is too short. It should be at least 9."));
     }
-
     @Test
     void testNumberIsTooLong() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
